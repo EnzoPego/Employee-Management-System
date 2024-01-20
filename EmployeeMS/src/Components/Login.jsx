@@ -1,26 +1,44 @@
 import axios from 'axios'
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './style.css'
 
-export const Logoin = () => {
+export const Login = () => {
 
   const [values, seteValues] = useState({
     email:'',
     password:''
   })
 
-  const handleSubmit =(e)=>{
-    e.preventDefault()
-    //console.log(values)
-    axios.post('http://localhost:3000/auth/adminlogin',values)
-    .then(result => console.log(result))  
-    .catch(err => console.log(err))
-  }
+  const [error, setError] = useState(null)
 
+  const navigate = useNavigate()
+  axios.defaults.withCredentials = true
+
+  
+  const handleSubmit = async (e) =>{
+    e.preventDefault()
+    try {
+      const result = await axios.post('http://localhost:3000/auth/adminlogin', values)
+      console.log(result)
+  
+      if (result.data.loginStatus){
+        navigate('/dashboard') 
+
+      } else {
+        setError(result.data.Error)
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   return (
     <div className="d-flex justify-content-center align-items-center vh-100 loginPage">
       <div className="p-3 rounded border loginForm col-10 col-sm-8 col-md-6 col-lg-4 mx-auto" style={{maxWidth: '400px'}}>
+        <div className='text-warning'>
+        {error ? <p>⛔ {error}</p> : null}
+        </div>
         <h2>Login Page</h2>
         <form onSubmit={handleSubmit}>
         <div className="mb-3">
@@ -39,7 +57,7 @@ export const Logoin = () => {
             <label htmlFor="password">You are Agree with terms & conditions</label>
           </div>
         </form>
-      </div>
+      </div>                   
     </div>
   );
 };
