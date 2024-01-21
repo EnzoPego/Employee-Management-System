@@ -31,19 +31,23 @@ router.post("/adminlogin", async (req, res) => {
   } 
 });
 
-// router.post('add_category',(req,res)=>{
-//   const sql = "INSERT INTO category ('name') VALUES (?)"
-//   con.query(sql,[req.body.category],(err,result)=>{
-//     if(err) return res.json({Status: false, Error:'Query Error'})
-//     return res.json({Status:true})
-//   })
-// })
+
+router.get('/category', async (req, res) => {
+  const sql = "SELECT * FROM category";
+  try {
+    const [result] = await db.query(sql);
+    //res.json({ Status: true, Result : result});
+    res.json(result)
+  } catch (error) {
+    res.json({ Status: false, Error: 'Query Error' });
+  }
+});
 
 
 router.post('/add_category', async (req, res) => {
-  const sql = "INSERT INTO category (`name`) VALUES (?)";  // Usar backticks (`) en lugar de comillas simples
+  const sql = "INSERT INTO category (`name`) VALUES (?)";  
   try {
-    const result = await db.query(sql, [req.body.category]);  // Usar db en lugar de con
+    const result = await db.query(sql, [req.body.category]);  
     return res.json({ Status: true });
   } catch (err) {
     console.error(err);
