@@ -4,13 +4,13 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 export const Category = () => {
-  const [categorys, setCategorys] = useState([]);
+  const [categories, setcategories] = useState([]);
 
   useEffect(() => {
     const getData = async () => {
       try {
         const result = await axios.get("http://localhost:3000/auth/category");
-        setCategorys(result.data); 
+        setcategories(result.data); 
         console.log(result.data); 
       } catch (error) {
         console.error(error);
@@ -22,7 +22,7 @@ export const Category = () => {
   return (
     <div className="px-5 mt-3">
       <div className="d-flex justify-content-center">
-        <h3>Categorys List</h3>
+        <h3>Categories List</h3>
       </div>
       <Link to="/dashboard/add_category" className="btn btn-success">
         Add Category
@@ -36,7 +36,7 @@ export const Category = () => {
           </thead>
           <tbody>
             {
-              categorys.map(category => (
+              categories.map(category => (
                 <tr key={category.id}>
                   <td>{category.name}</td>
                 </tr>
