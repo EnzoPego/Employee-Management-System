@@ -97,4 +97,14 @@ router.post('/add_employee', upload.single('image'), async (req, res) => {
   }
 });
 
+router.get('/employee',async (req,res)=>{
+  const sql = "SELECT * FROM employee"
+  try {
+    const [result] = await db.query(sql);
+    res.json(result)    
+  } catch (error) {
+    console.log(error)    
+  }
+})
+
 
