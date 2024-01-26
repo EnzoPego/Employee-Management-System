@@ -77,25 +77,17 @@ router.post('/add_employee', upload.single('image'), async (req, res) => {
 
   try {
     const hash = await bcrypt.hash(req.body.password.toString(), 10);
+    const { name, email, address, salary, filename, category_id } = req.body;
 
-    const values = [
-      req.body.name,
-      req.body.email,
-      hash,
-      req.body.address,
-      req.body.salary,
-      req.file.filename,
-      req.body.category_id,
-    ];
-
-    const result = await db.query(sql, values);
+    const result = await db.query(sql, [name, email, hash, address, salary, filename, category_id]);
 
     return res.json({ Status: true });
   } catch (err) {
     console.error(err);
-    return res.json({ Status: false, Error: 'Query error' });
+    return res.json({ Status: false, Error: 'Error en la consulta' });
   }
 });
+
 
 router.get('/employee',async (req,res)=>{
   const sql = "SELECT * FROM employee"
@@ -107,4 +99,43 @@ router.get('/employee',async (req,res)=>{
   }
 })
 
+router.get(`/employee/:id`, async (req,res)=>{
+  const id = req.params.id
+  const sql = "SELECT * FROM employee WHERE id = ?"
 
+  try {
+    const [result] = await db.query(sql, [id])
+    res.json(result)    
+  } catch (error) {
+    console.log(error)    
+  }
+})
+
+
+router.put(`/edit_employee/:id`, async (req, res) => {
+  const { name, email, salary, address, category_id } = req.body;
+  const id = req.params.id;
+
+  const sql =
+    "UPDATE employee SET name = ?, email = ?, salary = ?, address = ?" +
+    (category_id !== undefined && category_id !== ""
+      ? ", category_id = ?"
+      : "") +
+    " WHERE id = ?";
+
+  const values = [name, email, salary, address];
+
+  if (category_id !== undefined && category_id !== '') {
+    values.push(category_id);
+  }
+
+  values.push(id);
+
+  try {
+    const [result] = await db.query(sql, values);
+    res.json(result);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
