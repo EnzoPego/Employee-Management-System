@@ -3,10 +3,10 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 
-
 export const Employee = () => {
-
+  
   const [employee, setEmployee] = useState([])
+  
 
   useEffect(() => {
     const getEmployee = async () => {
@@ -20,6 +20,18 @@ export const Employee = () => {
     };
     getEmployee()
   }, []);
+
+  const handleDelete = async (id) =>{
+    try {
+      const response = await axios.delete(`http://localhost:3000/auth/delete_employee/${id}`)    
+      console.log(response.data)
+      if(response.data.affectedRows === 1 ){
+       window.location.reload()
+      }
+    } catch (error) {
+            
+    }
+  }
 
   return (
     <div className="px-5 mt-3">
@@ -39,7 +51,7 @@ export const Employee = () => {
               <th>Email</th>
               <th>Address</th>
               <th>Salary</th>
-              <th></th>
+              <th></th> 
             </tr>
           </thead>
           <tbody>
@@ -54,7 +66,9 @@ export const Employee = () => {
                   <td>US$ {e.salary}</td>
                   <td>
                     <Link to={`/dashboard/edit_employee/${e.id}`} className="btn btn-info btn-sm mx-1 mt-1">Edit</Link>
-                    <button className="btn btn-danger btn-sm mx-1 mt-1">Delete</button>
+                    <button className="btn btn-danger btn-sm mx-1 mt-1"
+                    onClick={()=>{handleDelete(e.id)}}
+                    >Delete</button>
                   </td>
                 </tr>
               ))

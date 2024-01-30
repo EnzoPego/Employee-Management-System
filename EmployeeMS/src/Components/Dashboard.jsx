@@ -1,10 +1,27 @@
 import React from "react";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import "bootstrap-icons/font/bootstrap-icons.css";
-
+import axios from "axios";
 
 
 export const Dashboard = () => {
+  
+  const navigate = useNavigate()
+
+  const handleLogout = async () =>{
+    axios.defaults.withCredentials = true
+    try {
+      const response = await axios.get('http://localhost:3000/auth/logout')
+      console.log(response)
+      if(response.data.Status) {
+        navigate('/adminLogin')
+      }      
+    } catch (error) {
+      console.log(error)      
+    }
+  } 
+
+
   return (
     <div className="container-fluid">
       <div className="row flex-nowrap">
@@ -60,7 +77,8 @@ export const Dashboard = () => {
                   <span className="ms-2 d-none d-sm-inline">Profile</span>
                 </Link>
               </li>
-              <li className="w-100">
+              <li onClick={handleLogout}
+               className="w-100">
                 <Link className="nav-link px-0 align-middle text-white">
                   <i className="fs-4 bi-power ms-2"></i>
                   <span className="ms-2 d-none d-sm-inline">Logout</span>

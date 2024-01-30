@@ -50,7 +50,8 @@ router.get('/category', async (req, res) => {
 router.post('/add_category', async (req, res) => {
   const sql = "INSERT INTO category (`name`) VALUES (?)";  
   try {
-    const result = await db.query(sql, [req.body.category]);  
+    const result = await db.query(sql, [req.body.category]); 
+    console.log(result) 
     return res.json({ Status: true });
   } catch (err) {
     console.error(err);
@@ -58,7 +59,7 @@ router.post('/add_category', async (req, res) => {
   }
 });
 
-// Image Upload
+//Image Upload
 const storage = multer.diskStorage({
   destination:(req, file, cb) => {
     cb(null, 'Public/Images')
@@ -72,14 +73,17 @@ const upload = multer({
 })
 
 
+
 router.post('/add_employee', upload.single('image'), async (req, res) => {
   const sql = "INSERT INTO employee (`name`, `email`, `password`, `address`, `salary`, `image`, `category_id` ) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
   try {
     const hash = await bcrypt.hash(req.body.password.toString(), 10);
-    const { name, email, address, salary, filename, category_id } = req.body;
+    const { name, email, address, salary, category_id } = req.body;
+    const filename = req.file.filename
 
     const result = await db.query(sql, [name, email, hash, address, salary, filename, category_id]);
+    
 
     return res.json({ Status: true });
   } catch (err) {
@@ -139,3 +143,71 @@ router.put(`/edit_employee/:id`, async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
+router.delete('/delete_employee/:id', async (req,res)=>{
+  const id = req.params.id 
+  const sql = "DELETE from employee where id = ?"
+  try {
+    const [result] = await db.query(sql,[id])
+    res.json(result)
+    console.log(result)
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+})
+
+router.get('/admin_count', async (req, res) => {
+  const sql = 'SELECT count(id) as admin from admin';
+  try {
+    const [result] = await db.query(sql);
+    res.json(result);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+router.get('/employee_count', async (req , res) => {
+  const sql = 'SELECT count(id) as employee from employee';
+
+  try {
+    const [result] = await db.query(sql)
+    res.json(result) 
+  } catch (error) {
+    
+  }
+})
+
+router.get('/salary_count', async (req , res) => {
+  const sql = 'SELECT sum(salary) as salary from employee';
+
+  try {
+    const [result] = await db.query(sql)
+    res.json(result) 
+  } catch (error) {
+    
+  }
+})
+
+router.get('/admin_records', async (req , res) => {
+  const sql = 'SELECT * from admin';
+
+  try {
+    const [result] = await db.query(sql)
+    res.json(result) 
+  } catch (error) {
+    console.log(error)
+  }
+})
+
+router.get('/logout', async (req , res) => {
+  try {
+   res.clearCookie('token')
+   res.json({Status: true})
+   console.log(res)
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({Status:false, message: "An error occurred"})
+  }
+ 
+})

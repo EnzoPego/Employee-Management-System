@@ -9,7 +9,7 @@ export const AddEmployee = () => {
     password: "",
     salary: "",
     address: "",
-    category_id: "",
+    category_id:"" || 19, //default category IT 
     image: "",
   });
 
@@ -136,11 +136,12 @@ export const AddEmployee = () => {
               id="category"
               className="form-select"
               onChange={(e) =>
-                setEmployee({ ...employee, category_id: e.target.value })
+                setEmployee({...employee, category_id: e.target.value})
               }
             >
               {categories.map((category) => (
-                <option key={category.id} value={category.id}>
+                <option 
+                 key={category.id} value={category.id}>
                   {category.name}
                 </option>
               ))}
