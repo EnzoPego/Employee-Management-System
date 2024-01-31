@@ -8,7 +8,7 @@ import path from 'path'
 export const router = express.Router();
 
 
-router.post("/adminlogin", async (req, res) => {
+router.post("/admin_login", async (req, res) => {
   const { email, password } = req.body;
 
   try {

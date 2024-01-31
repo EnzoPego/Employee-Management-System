@@ -19,7 +19,7 @@ export const Login = () => {
   const handleSubmit = async (e) =>{
     e.preventDefault()
     try {
-      const result = await axios.post('http://localhost:3000/auth/adminlogin', values)
+      const result = await axios.post('http://localhost:3000/auth/admin_login', values)
       console.log(result)
   
       if (result.data.loginStatus){
