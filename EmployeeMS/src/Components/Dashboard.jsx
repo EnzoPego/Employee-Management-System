@@ -14,13 +14,13 @@ export const Dashboard = () => {
       const response = await axios.get('http://localhost:3000/auth/logout')
       console.log(response)
       if(response.data.Status) {
-        navigate('/admin_login')
+        localStorage.removeItem('valid')
+        navigate('/')
       }      
     } catch (error) {
       console.log(error)      
     }
   } 
-
 
   return (
     <div className="container-fluid">

@@ -22,7 +22,7 @@ export const EmployeeLogin = () => {
           console.log(result)
       
           if (result.data.loginStatus){
-            // navigate('/employee_detail/'+result.data.id) 
+            localStorage.setItem('valid',true)
             const { id } = result.data;
             navigate(`/employee_detail/${id}`) 
     

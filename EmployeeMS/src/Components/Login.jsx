@@ -15,7 +15,6 @@ export const Login = () => {
   const navigate = useNavigate()
   axios.defaults.withCredentials = true
 
-  
   const handleSubmit = async (e) =>{
     e.preventDefault()
     try {
@@ -23,8 +22,8 @@ export const Login = () => {
       console.log(result)
   
       if (result.data.loginStatus){
+        localStorage.setItem("valid",true)
         navigate('/dashboard') 
-
       } else {
         setError(result.data.Error)
       }

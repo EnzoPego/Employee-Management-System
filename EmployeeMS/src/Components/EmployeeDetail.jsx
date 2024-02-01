@@ -1,10 +1,12 @@
 import axios from "axios"
 import { useEffect, useState } from "react"
-import { useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
+
 
 export const EmployeeDetail = () => {
     const {id} = useParams()
     const [employee, setEmployee] = useState([])
+    const navigate = useNavigate()
 
     useEffect(()=>{
         getEmployee()
@@ -18,6 +20,19 @@ export const EmployeeDetail = () => {
             
         } catch (error) {
             console.log(error)            
+        }
+    }
+
+    const handleLogout = async () => {
+        try {
+          const response = await axios.get('http://localhost:3000/employee/logout')
+          console.log(response)
+          if(response.data.Status) {
+            localStorage.removeItem('valid')
+            navigate('/')
+          }      
+        } catch (error) {
+          console.log(error)      
         }
     }
 
@@ -37,11 +52,11 @@ export const EmployeeDetail = () => {
                 <h3>Salary: ${employee.salary}</h3>
             </div>
             <div>
-                <button className='btn btn-primary me-2'>Edit</button>
-                <button className='btn btn-danger'>Logout</button>
+                <button className='btn btn-danger'
+                onClick={handleLogout}
+                >Logout</button>
             </div>
         </div>
     </div>
   )
 }
-
